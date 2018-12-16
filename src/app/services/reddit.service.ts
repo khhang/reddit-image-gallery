@@ -2,14 +2,14 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { ListingsParams } from '../models/listingsParams';
+import { ConfigService } from './config.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class RedditService {
 
-  private baseUrl = "http://localhost:3000";
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient, private configService: ConfigService) { }
 
   // Get JSON data for subreddits with given options
   getSubreddits(_subNames: string[], _sortOption: string,  _params: ListingsParams = {}): Observable<any> {
@@ -26,7 +26,7 @@ export class RedditService {
       }
     }
     const params = options.toString();
-    return this.http.get(`${this.baseUrl}/r/${subNames}/${_sortOption}?${params}`);
+    return this.http.get(`${this.configService.apiURL}/r/${subNames}/${_sortOption}?${params}`);
   }
 
   getSubredditAutocomplete(_params: any){
@@ -37,7 +37,7 @@ export class RedditService {
     }
 
     const params = options.toString();
-    return this.http.get(`${this.baseUrl}/api/subreddit_autocomplete?${params}`);
+    return this.http.get(`${this.configService.apiURL}/api/subreddit_autocomplete?${params}`);
   }
 
   parseImageData(_subsData: any): ImageData[] {
