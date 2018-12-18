@@ -44,7 +44,7 @@ export class RedditService {
     let imageData: ImageData[] = [];
     if(_subsData){
       imageData = _subsData.data.children.filter((node) => {
-        return node.data.url.endsWith('.jpg');
+        return node.data.url.endsWith('.jpg') || node.data.url.endsWith('.gif');
       }).map((node) => {
         return {
           url: node.data.url,

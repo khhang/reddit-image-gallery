@@ -18,6 +18,8 @@ export class AppComponent {
   public selectedSortOption = 'best';
   public autocompleteNames: string[] = [];
   public tags: string[] = [];
+  public after: string = "";
+
   constructor(private _redditService: RedditService){ }
 
   ngOnInit(){
@@ -50,18 +52,22 @@ export class AppComponent {
   }
 
   getSubreddits(){
+    let media: ImageData[] = []
     if(this.subreddit || this.tags.length > 0){
-      this._redditService.getSubreddits([this.subreddit, ...this.tags], this.selectedSortOption, {}).pipe(
+      this._redditService.getSubreddits([this.subreddit, ...this.tags], this.selectedSortOption, {after: this.after, count: 50}).pipe(
         expand(result => {
-          let after = result.data.after;
-          this.imageData = [...this.imageData, ...this._redditService.parseImageData(result)];
-          if(this.imageData.length < 50){
-            return this._redditService.getSubreddits([this.subreddit, ...this.tags], this.selectedSortOption, {after: after, count: 50})
-          }else{
-            return EMPTY;
+          if(result.data){
+            media.push(...this._redditService.parseImageData(result));
+            this.after = result.data.after;
+            if(this.after && media.length < 50){
+              return this._redditService.getSubreddits([this.subreddit, ...this.tags], this.selectedSortOption, {after: result.data.after, count: 50});
+            }
           }
+          return EMPTY;
         })
-      ).subscribe(result => console.log(result));
+      ).subscribe((result) => {
+        this.imageData.push(...this._redditService.parseImageData(result));
+      })
     }
   }
 
@@ -78,9 +84,7 @@ export class AppComponent {
   }
 
   onSortChange(){
-    this._redditService.getSubreddits([this.subreddit], this.selectedSortOption, {limit: 50}).subscribe((result: any) =>{
-      this.imageData = this._redditService.parseImageData(result);
-    });
+    this.getSubreddits();
   }
 
   addTag(subName: string, event: any){
