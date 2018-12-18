@@ -1,6 +1,8 @@
 import { Component } from '@angular/core';
 import { RedditService } from './services/reddit.service';
 import { SortOption } from './models/sortOption';
+import { expand } from 'rxjs/operators';
+import { EMPTY } from 'rxjs';
 
 @Component({
   selector: 'app-root',
@@ -49,9 +51,17 @@ export class AppComponent {
 
   getSubreddits(){
     if(this.subreddit || this.tags.length > 0){
-      this._redditService.getSubreddits([this.subreddit, ...this.tags], this.selectedSortOption, {}).subscribe((result: any) => {
-        this.imageData = this._redditService.parseImageData(result);
-      });
+      this._redditService.getSubreddits([this.subreddit, ...this.tags], this.selectedSortOption, {}).pipe(
+        expand(result => {
+          let after = result.data.after;
+          this.imageData = [...this.imageData, ...this._redditService.parseImageData(result)];
+          if(this.imageData.length < 50){
+            return this._redditService.getSubreddits([this.subreddit, ...this.tags], this.selectedSortOption, {after: after, count: 50})
+          }else{
+            return EMPTY;
+          }
+        })
+      ).subscribe(result => console.log(result));
     }
   }
 
