@@ -4,60 +4,64 @@
     </mat-sidenav>
 
     <mat-sidenav-content>
-        <mat-card>
-            <div style="width: 100%; display: flex; justify-content: space-between">
-                <div style="display: inline-block">
-                    <span>
-                        <button mat-icon-button color="white">
-                            <i class="material-icons" (click)="sidenav.toggle()">menu</i>
-                        </button>
-                        Reddit Images
-                    </span>
-                </div>
-                <div style="display: inline-block">
-                    <mat-form-field style="width: 400px; margin: 0 5px">    
-                        <input matInput (keyup)="getSubredditAutocomplete(subreddit)" (keyup.enter)="getSubreddits()" 
-                        placeholder="Enter a subreddit" [(ngModel)]="subreddit" [matAutocomplete]="autocompleteSubs"/>
-                    </mat-form-field>
-
-                    <mat-autocomplete #autocompleteSubs>
-                        <mat-option *ngFor="let name of autocompleteNames" [value]="name">
-                            <div style="display: flex; justify-content: space-between">
-                                <span>{{(name.length) > 20 ? (name | slice:0:20)+'...':(name)}}</span>
-                                <button mat-icon-button color="white" (click)="addTag(name, $event)">
-                                    <i class="material-icons">add</i>
+        <div class="grid-container">
+            <div>
+                <mat-card>
+                    <div style="width: 100%; display: flex; justify-content: space-between; padding: 0 15px">
+                        <div style="display: inline-block">
+                            <span>
+                                <button mat-icon-button color="white">
+                                    <i class="material-icons" (click)="sidenav.toggle()">menu</i>
                                 </button>
-                            </div>
-                        </mat-option>
-                    </mat-autocomplete>
-
-                    <mat-form-field>
-                        <mat-select [(ngModel)]="selectedSortOption" (ngModelChange)="onSortChange()" placeholder="Sort order">
-                            <mat-option *ngFor="let sortOption of sortOptions" value="{{sortOption.value}}">
-                                {{sortOption.label}}
-                            </mat-option>
-                        </mat-select>
-                    </mat-form-field>
-                    <button mat-icon-button (click)="getSubreddits()">
-                        <i class="material-icons">search</i>
-                    </button>
-                </div>
-                <div style="display: inline-block"> 
-                    <span>Account</span>
-                </div>
+                                Reddit Images
+                            </span>
+                        </div>
+                        <div style="display: inline-block">
+                            <mat-form-field style="width: 400px; margin: 0 5px">    
+                                <input matInput (keyup)="getSubredditAutocomplete(subreddit)" (keyup.enter)="getImages()" 
+                                placeholder="Enter a subreddit" [(ngModel)]="subreddit" [matAutocomplete]="autocompleteSubs"/>
+                            </mat-form-field>
+    
+                            <mat-autocomplete #autocompleteSubs>
+                                <mat-option *ngFor="let name of autocompleteNames" [value]="name">
+                                    <div style="display: flex; justify-content: space-between">
+                                        <span>{{(name.length) > 20 ? (name | slice:0:20)+'...':(name)}}</span>
+                                        <button mat-icon-button color="white" (click)="addTag(name, $event)">
+                                            <i class="material-icons">add</i>
+                                        </button>
+                                    </div>
+                                </mat-option>
+                            </mat-autocomplete>
+    
+                            <mat-form-field>
+                                <mat-select [(ngModel)]="selectedSortOption" (ngModelChange)="onSortChange()" placeholder="Sort order">
+                                    <mat-option *ngFor="let sortOption of sortOptions" value="{{sortOption.value}}">
+                                        {{sortOption.label}}
+                                    </mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                            <button mat-icon-button (click)="getImages()">
+                                <i class="material-icons">search</i>
+                            </button>
+                        </div>
+                        <div style="display: inline-block"> 
+                            <span>Account</span>
+                        </div>
+                    </div>
+                    <mat-chip-list>
+                        <mat-chip *ngFor="let tag of tags">
+                            <span>&#47;r&#47;{{tag}}</span>
+                            <button mat-icon-button (click)="removeTag(tag)" style="width: 20px; height: 20px; line-height: 20px; margin-left: 5px">
+                                <i class="material-icons" style="font-size: 12px; line-height: 12px">close</i>
+                            </button>
+                        </mat-chip>
+                    </mat-chip-list>
+                </mat-card>
             </div>
-            <mat-chip-list>
-                <mat-chip *ngFor="let tag of tags">
-                    <span>&#47;r&#47;{{tag}}</span>
-                    <button mat-icon-button (click)="removeTag(tag)" style="width: 20px; height: 20px; line-height: 20px; margin-left: 5px">
-                        <i class="material-icons" style="font-size: 12px; line-height: 12px">close</i>
-                    </button>
-                </mat-chip>
-            </mat-chip-list>
-        </mat-card>
-        <div>
-            <div *ngFor="let image of imageData" style="display: inline-block">
-                <img style="max-height: 400px; width: auto" [src]="image.url"/>
+            <div style="overflow-y: auto" (scroll)="onScroll($event)">
+                <div *ngFor="let image of imageData" style="display: inline-block">
+                    <img style="max-height: 400px; width: auto" [src]="image.url"/>
+                </div>
             </div>
         </div>
     </mat-sidenav-content>

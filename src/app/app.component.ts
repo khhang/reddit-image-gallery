@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, HostListener } from '@angular/core';
 import { RedditService } from './services/reddit.service';
 import { SortOption } from './models/sortOption';
 import { expand } from 'rxjs/operators';
@@ -19,6 +19,7 @@ export class AppComponent {
   public autocompleteNames: string[] = [];
   public tags: string[] = [];
   public after: string = "";
+  public appendImages: boolean = false;
 
   constructor(private _redditService: RedditService){ }
 
@@ -51,9 +52,15 @@ export class AppComponent {
     ];
   }
 
-  getSubreddits(){
+  getImages(){
+    this.imageData = [];
+    this.appendNewImages();
+  }
+
+  appendNewImages(){
     let media: ImageData[] = []
     if(this.subreddit || this.tags.length > 0){
+      this.appendImages = true;
       this._redditService.getSubreddits([this.subreddit, ...this.tags], this.selectedSortOption, {after: this.after, count: 50}).pipe(
         expand(result => {
           if(result.data){
@@ -67,7 +74,8 @@ export class AppComponent {
         })
       ).subscribe((result) => {
         this.imageData.push(...this._redditService.parseImageData(result));
-      })
+        this.appendImages = false;
+      });
     }
   }
 
@@ -84,7 +92,7 @@ export class AppComponent {
   }
 
   onSortChange(){
-    this.getSubreddits();
+    this.getImages();
   }
 
   addTag(subName: string, event: any){
@@ -103,6 +111,16 @@ export class AppComponent {
 
     if(removeIdx != -1){
       this.tags.splice(removeIdx, 1);
+    }
+  }
+
+  onScroll(event: any){
+    let source = event.srcElement;
+    if(!this.appendImages && source.scrollHeight - source.scrollTop - source.clientHeight === 0){
+      this.appendNewImages();
+      console.log("Appendnign new images");
+    }else{
+      console.log(source.scrollHeight - source.scrollTop - source.clientHeight);
     }
   }
 }
