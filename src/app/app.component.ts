@@ -118,9 +118,6 @@ export class AppComponent {
     let source = event.srcElement;
     if(!this.appendImages && source.scrollHeight - source.scrollTop - source.clientHeight === 0){
       this.appendNewImages();
-      console.log("Appendnign new images");
-    }else{
-      console.log(source.scrollHeight - source.scrollTop - source.clientHeight);
     }
   }
 }
