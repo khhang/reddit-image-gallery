@@ -7,10 +7,12 @@ import { MatButtonModule, MatToolbarModule, MatInputModule, MatIconModule, MatSi
 
 import { AppComponent } from './app.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { GalleryComponent } from './gallery/gallery.component';
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    GalleryComponent
   ],
   imports: [
     BrowserModule,

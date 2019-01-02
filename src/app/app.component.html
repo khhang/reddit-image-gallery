@@ -58,10 +58,8 @@
                     </mat-chip-list>
                 </mat-card>
             </div>
-            <div style="overflow-y: auto" (scroll)="onScroll($event)">
-                <div *ngFor="let image of imageData" style="display: inline-block">
-                    <img style="max-height: 400px; width: auto" [src]="image.url"/>
-                </div>
+            <div style="overflow-y: auto">
+                <app-gallery [imageData]="imageData" (scrolledToBottom)="onScroll($event)"></app-gallery>
             </div>
         </div>
     </mat-sidenav-content>

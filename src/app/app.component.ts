@@ -15,7 +15,7 @@ export class AppComponent {
   public redditNames: any = [];
   public sortOptions: SortOption[] = [];
   public subreddit = '';
-  public selectedSortOption = 'best';
+  public selectedSortOption = 'hot';
   public autocompleteNames: string[] = [];
   public tags: string[] = [];
   public after: string = "";
@@ -54,6 +54,7 @@ export class AppComponent {
 
   getImages(){
     this.imageData = [];
+    this.after = "";
     this.appendNewImages();
   }
 
