@@ -1,5 +1,8 @@
-<div #gallery class="gallery" (scroll)="onScroll($event)" (window:resize)="onResize($event)">
-  <div *ngFor="let image of imageData">
-      <img [src]="image.url"/>
+<!-- <div>
+  <button (click)="onResize()">Test</button>
+</div> -->
+<div #gallery class="gallery" (scroll)="onScroll($event)" (window:resize)="onResize()">
+  <div *ngFor="let image of _imageData; let i = index">
+      <img [src]="image.url" (load)="onImageLoad(i, $event)"/>
   </div>
 </div>

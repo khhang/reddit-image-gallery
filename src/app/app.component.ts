@@ -74,7 +74,7 @@ export class AppComponent {
           return EMPTY;
         })
       ).subscribe((result) => {
-        this.imageData.push(...this._redditService.parseImageData(result));
+        this.imageData = [...this.imageData,...this._redditService.parseImageData(result)];
         this.appendImages = false;
       });
     }
