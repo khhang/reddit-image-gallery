@@ -1,5 +1,4 @@
-import { Action } from '@ngrx/store';
-import { ImageData } from './../models/imageData';
+import { ImageData } from './../../models/imageData';
 import * as  ImageActions from './../actions/image.actions';
 
 export interface State {
@@ -9,13 +8,12 @@ export interface State {
 }
 
 export const initialState: State = {
-    data: [],
+    data: [{url: 'test', subreddit: 'test', title: 'test'}],
     loaded: false,
     loading: false
 };
 
 export function reducer(state: State = initialState, action: ImageActions.Actions): State {
-    
     switch(action.type){
         case ImageActions.GET_IMAGES:
             return {
@@ -23,12 +21,14 @@ export function reducer(state: State = initialState, action: ImageActions.Action
                 loading: true
             };
         case ImageActions.GET_IMAGES_SUCCESS:
+            const data = action.payload;
             return {
                 ...state,
                 loading: false,
-                loaded: true
+                loaded: true,
+                data
             }
-        case ImageActions.GET_IMAGES_SUCCESS:
+        case ImageActions.GET_IMAGES_FAILED:
             return {
                 ...state,
                 loading: false,
