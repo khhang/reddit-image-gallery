@@ -8,7 +8,7 @@ export interface State {
 }
 
 export const initialState: State = {
-    data: [{url: 'test', subreddit: 'test', title: 'test'}],
+    data: [],
     loaded: false,
     loading: false
 };

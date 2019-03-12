@@ -29,8 +29,10 @@ export class AppComponent {
   constructor(private _redditService: RedditService, private store: Store<fromStore.AppState>){ }
 
   ngOnInit(){
-    
-    this.store.dispatch(new fromStore.GetImages({}));
+    this.store.select('images').subscribe((state) => {
+      this.imageData = state.data;
+      console.log(state.data);
+    });
 
     this.sortOptions = [
       {
@@ -63,12 +65,13 @@ export class AppComponent {
   getImages(){
     this.imageData = [];
     this.after = "";
+    this.store.dispatch(new fromStore.GetImages({
+      subreddits: [this.subreddit, ...this.tags],
+      sortOption: this.selectedSortOption,
+      listingParams: {count: 50}
+    }));
     // this.appendNewImages();
     // Make a GET request via service, service responsible for dispatching actions
-    this.store.select('images').subscribe((state) => {
-      this.imageData = state.data;
-      console.log(state.data);
-    });
   }
 
   // appendNewImages(){

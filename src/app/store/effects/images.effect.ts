@@ -16,9 +16,9 @@ export class ImagesEffects {
     @Effect()
     getImages$ = this.actions$.pipe(
         ofType(ImageActions.GET_IMAGES),
-        switchMap((action) => {
+        switchMap((action: ImageActions.GetImages) => {
             console.log(action);
-            return this.redditService.getSubreddits(['BeAmazed'], 'hot').pipe(
+            return this.redditService.getSubreddits(action.payload.subreddits, action.payload.sortOption, action.payload.listingParams).pipe(
                 map((subreddits) => {
                     const images = this.redditService.parseImageData(subreddits); // Process subs to pull images from subs
                     return new ImageActions.GetImagesSuccess(images);
