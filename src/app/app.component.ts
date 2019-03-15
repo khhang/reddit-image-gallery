@@ -1,8 +1,9 @@
 import { Component } from '@angular/core';
 import { RedditService } from './services/reddit.service';
 
-import { Store } from '@ngrx/store';
+import { Store, select } from '@ngrx/store';
 import * as fromStore from './store';
+import * as SearchActions from './store/actions/search.actions';
 
 import { SortOption } from './models/sortOption';
 import { ImageData } from './models/imageData';
@@ -29,9 +30,14 @@ export class AppComponent {
   constructor(private _redditService: RedditService, private store: Store<fromStore.AppState>){ }
 
   ngOnInit(){
-    this.store.select('images').subscribe((state) => {
+    this.store.pipe(select('images')).subscribe((state) => {
       this.imageData = state.data;
       console.log(state.data);
+    });
+
+    this.store.pipe(select('search')).subscribe((state) => {
+      console.log(state);
+      this.tags = state.tags;
     });
 
     this.sortOptions = [
@@ -71,7 +77,6 @@ export class AppComponent {
       listingParams: {count: 50}
     }));
     // this.appendNewImages();
-    // Make a GET request via service, service responsible for dispatching actions
   }
 
   // appendNewImages(){
@@ -113,7 +118,7 @@ export class AppComponent {
   }
 
   addTag(subName: string, event: any){
-    this.tags.push(subName);
+    this.store.dispatch(new SearchActions.AddTag(subName));
 
     const autoIdx = this.autocompleteNames.indexOf(subName);
     if(autoIdx != -1){
@@ -124,11 +129,7 @@ export class AppComponent {
   }
 
   removeTag(subName: string){
-    const removeIdx = this.tags.indexOf(subName);
-
-    if(removeIdx != -1){
-      this.tags.splice(removeIdx, 1);
-    }
+    this.store.dispatch(new SearchActions.RemoveTag(subName));
   }
 
   // onScroll(event: any){
