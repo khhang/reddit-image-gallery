@@ -38,6 +38,9 @@ export class AppComponent {
     this.store.pipe(select('search')).subscribe((state) => {
       console.log(state);
       this.tags = state.tags;
+      this.autocompleteNames = state.subs.filter((subreddit) => {
+        return subreddit.allowedPostTypes.images && this.tags.indexOf(subreddit.name) == -1;
+      }).map(subreddit => subreddit.name);
     });
 
     this.sortOptions = [
@@ -103,11 +106,13 @@ export class AppComponent {
 
   getSubredditAutocomplete(subName: string){
     if(subName){
-      this._redditService.getSubredditAutocomplete({include_over_18: false, include_profiles: false, query: subName}).subscribe((result: any) => {
-        this.autocompleteNames = result.subreddits.filter((subreddit) => {
-          return subreddit.allowedPostTypes.images && this.tags.indexOf(subreddit.name) == -1;
-        }).map(subreddit => subreddit.name);
-      });
+      console.log(subName);
+      this.store.dispatch(new SearchActions.GetSubAutocomplete(subName));
+      // this._redditService.getSubredditAutocomplete({include_over_18: false, include_profiles: false, query: subName}).subscribe((result: any) => {
+      //   this.autocompleteNames = result.subreddits.filter((subreddit) => {
+      //     return subreddit.allowedPostTypes.images && this.tags.indexOf(subreddit.name) == -1;
+      //   }).map(subreddit => subreddit.name);
+      // });
     }else{
       this.autocompleteNames = [];
     }

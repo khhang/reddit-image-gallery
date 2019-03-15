@@ -45,6 +45,7 @@ export function reducer(state: State = initialState, action: SearchActions.Searc
         case SearchActions.SearchActionTypes.GetSubAutocompleteSuccess:
             return {
                 ...state,
+                subs: action.payload,
                 loading: false,
                 loaded: true
             };
